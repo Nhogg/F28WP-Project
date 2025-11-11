@@ -25,12 +25,7 @@ function App() {
 
   return (
     <div className="App">
-      <header className="App-header">
-        <h1>F28WP Project</h1>
-        {loading && <p>Loading...</p>}
-        {error && <p style={{ color: 'red' }}>Error: {error}</p>}
-        {message && <p style={{ color: 'green' }}>{message}</p>}
-      </header>
+      
     </div>
   )
 }
