@@ -30,7 +30,7 @@ const FavouritesPage = () => {
   return (
     <ListingGrid>
       {favourites.map((listing) => (
-        <Card key={listing.id} listing={listing} />
+        <Card key={listing.propertyID} listing={listing} />
       ))}
     </ListingGrid>
   );

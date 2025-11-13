@@ -2,11 +2,14 @@ import { useState, useEffect } from 'react';
 import { api } from '../utils/api';
 import Card from '../components/Card';
 import ListingGrid from '../components/ListingGrid';
+import ListingDetailPanel from '../components/ListingDetailPanel';
+import './RentPage.css';
 
 const RentPage = () => {
   const [listings, setListings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [selectedListing, setSelectedListing] = useState(null);
 
   useEffect(() => {
     const fetchListings = async () => {
@@ -24,15 +27,42 @@ const RentPage = () => {
     fetchListings();
   }, []);
 
+  const handleListingClick = (listing) => {
+    setSelectedListing(listing);
+  };
+
+  const handleClosePanel = () => {
+    setSelectedListing(null);
+  };
+
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
 
+
   return (
-    <ListingGrid>
-      {listings.map((listing) => (
-        <Card key={listing.id} listing={listing} />
-      ))}
-    </ListingGrid>
+    <div className="rent-page-container">
+      <div className={`listings-container ${selectedListing ? 'with-panel' : ''}`}>
+        <ListingGrid>
+          {listings.map((listing, index) => {
+            const isActive = selectedListing && listing.propertyID === selectedListing.propertyID;
+            return (
+              <Card 
+                key={listing.propertyID || index} 
+                listing={listing} 
+                onClick={() => handleListingClick(listing)}
+                active={isActive}
+              />
+            );
+          })}
+        </ListingGrid>
+      </div>
+      {selectedListing && (
+        <ListingDetailPanel 
+          listing={selectedListing} 
+          onClose={handleClosePanel}
+        />
+      )}
+    </div>
   );
 };
 

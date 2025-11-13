@@ -34,10 +34,11 @@ const PropertyDetailPage = () => {
   return (
     <div>
       <button onClick={() => navigate(-1)}>← Back</button>
-      <h1>{property.title || 'Property Details'}</h1>
-      <p>{property.description}</p>
-      <p>Price: ${property.price}</p>
-      <p>Location: {property.location}</p>
+      <h1>{property.propertyName || 'Property Details'}</h1>
+      <p>{property.pDescription}</p>
+      <p>Price: ${property.pricePerNight}/night</p>
+      <p>Location: {property.pAddress}</p>
+      <p>Rooms: {property.rooms}</p>
     </div>
   );
 };
