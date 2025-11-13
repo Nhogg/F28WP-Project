@@ -5,19 +5,22 @@ CREATE TABLE Users (
     userID INT AUTO_INCREMENT PRIMARY KEY,
     fName VARCHAR(50) NOT NULL,
     lName VARCHAR(50) NOT NULL,
-    pass VARCHAR(100) NOT NULL
+    pass VARCHAR(255) NOT NULL,
+    createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE Properties (
     propertyID INT AUTO_INCREMENT PRIMARY KEY,
     ownerID INT,
     propertyName VARCHAR(50) NOT NULL,
+    pType VARCHAR(50) NOT NULL,
     pDescription TEXT NOT NULL,
     pType VARCHAR(50) NOT NULL,
     pAddress VARCHAR(300),
     pricePerNight DECIMAL(6,2) NOT NULL,
     rooms INT NOT NULL,
-    FOREIGN KEY (ownerID) REFERENCES Users(userID)
+    createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (ownerID) REFERENCES Users(userID) ON DELETE CASCADE
 );
 
 CREATE TABLE Bookings (
@@ -28,16 +31,34 @@ CREATE TABLE Bookings (
     endDate DATE NOT NULL,
     totalPrice DECIMAL(7,2) NOT NULL,
     bookingStatus ENUM('Pending', 'Approved', 'Denied') DEFAULT 'Pending',
-    FOREIGN KEY (propertyID) REFERENCES Properties(propertyID),
-    FOREIGN KEY (renterID) REFERENCES Users(userID)
+    createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (propertyID) REFERENCES Properties(propertyID) ON DELETE CASCADE,
+    FOREIGN KEY (renterID) REFERENCES Users(userID) ON DELETE CASCADE
 );
 
 CREATE TABLE Reviews (
     reviewID INT AUTO_INCREMENT PRIMARY KEY,
     propertyID INT,
     renterID INT,
-    rating TINYINT NOT NULL,
+    rating TINYINT NOT NULL CHECK (rating BETWEEN 1 AND 5),
     comment TEXT,
-    FOREIGN KEY (propertyID) REFERENCES Properties(propertyID),
-    FOREIGN KEY (renterID) REFERENCES Users(userID)
+    createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (propertyID) REFERENCES Properties(propertyID) ON DELETE CASCADE,
+    FOREIGN KEY (renterID) REFERENCES Users(userID) ON DELETE CASCADE
+);
+
+CREATE TABLE Sessions (
+    sessionID INT AUTO_INCREMENT PRIMARY KEY,
+    userID INT,
+    sessionToken VARCHAR(100) NOT NULL UNIQUE,
+    expiry DATETIME NOT NULL,
+    createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (userID) REFERENCES Users(userID) ON DELETE CASCADE
+);
+
+CREATE TABLE PropertyImages (
+    imageID INT AUTO_INCREMENT PRIMARY KEY,
+    propertyID INT NOT NULL,
+    imageURL VARCHAR(255) NOT NULL,
+    FOREIGN KEY (propertyID) REFERENCES Properties(propertyID) ON DELETE CASCADE
 );
